@@ -3,108 +3,34 @@ title: "Rapport"
 output: word_document
 ---
 ```{r}
-#install.packages("twitteR")
-library(twitteR)
-
-consumer_key = 'XBVL33PFqTKkM58CQ8DDo7ECl'
-consumer_secret = 'GevVXBsQKRH0xqBY8gx3jYln7tFEC4F2AwKyZqBqaDqKYyfZJk'
-access_token = '2778070825-s4vifN46FrHG5AFkgNfyBrb2PuKadprl33dUa8x'
-access_secret = '8c1i7QW8H8Bq6KmiRBCLUbtFV7BC14l79wnnjDi3Z7fR3'
-
-setup_twitter_oauth(consumer_key, consumer_secret,access_token, access_secret)
-
-#-------------------------------------------------------------------------------------------------------
-
-tweets = userTimeline("Trump", n=3200)
-writeLines(strwrap(tweets.df$text[1],60))
-
-tweets.df=twListToDF(tweets)
-tweets.df$text[2]
-
-#------------------------------------------------------------------------------------------------------
 library(tm)
 
-vector.source=VectorSource(tweets.df$text)
-tw.corpus=Corpus(vector.source)
+amazon=read.table('//qlsrv/vg502574/Bureau/Programmation/Option TextAnalysis/Projet/sentiment labelled sentences/amazon_cells_labelled.txt', sep='\t', col.names = c("text","avis"))
 
-removeURL <- function(x) gsub("http[^[:space:]]*", "", x)
+vector.amazon=VectorSource(amazon$text);
+corpus.amazon=Corpus(vector.amazon)
+
+#Fonctions de nettoyage
 removeNumPunct <- function(x) gsub("[^[:alpha:][:space:]]*", "", x)
 
-tw.corpus=tm_map(tw.corpus, content_transformer(tolower))
-tw.corpus=tm_map(tw.corpus, content_transformer(removeURL))
-tw.corpus=tm_map(tw.corpus, content_transformer(removeNumPunct))
+#Nettoyage Amazon----------------------------------------------------------------------------------------------------
+corpus.amazon=tm_map(corpus.amazon, content_transformer(tolower))
+corpus.amazon=tm_map(corpus.amazon, content_transformer(removeNumPunct))
 
 
 
-myStopwords <- c(stopwords('english'), "use", "see", "used", "via", "amp")
-myStopwords <- setdiff(myStopwords, c("r", "big"))
+myStopwords <- c(stopwords('english'), "use", "see", "used", "via", "amp", "us", "go")
+#myStopwords <- setdiff(myStopwords, c("r", "big"))
 
-tw.corpus=tm_map(tw.corpus, removeWords,myStopwords)
-tw.corpus=tm_map(tw.corpus, stripWhitespace)
+corpus.amazon=tm_map(corpus.amazon, removeWords,myStopwords)
+corpus.amazon=tm_map(corpus.amazon, stripWhitespace)
 
-as.character(tw.corpus[[77]])
+corpus.amazon=tm_map(corpus.amazon,stemDocument)
 
-#------------------------------------------------------------------------------------------------------
+as.character(corpus.amazon[[1]])
+#------------------------------------------------------------------------------------------------------------------------
+  
 
-tw.corpus.copy=tw.corpus
-
-
-tw.corpus.copy=tm_map(tw.corpus.copy,stemDocument)
-
-as.character(tw.corpus.copy[[77]])
-
-stemCompletion2 <- function(x, dictionary)
-{
-  x <- unlist(strsplit(as.character(x), " ")) 
-  x <- x[x != ""] 
-  x <- stemCompletion(x, dictionary=dictionary)  
-  x <- paste(x, sep="", collapse=" ") 
-  PlainTextDocument(stripWhitespace(x))
-}
-
-tw.corpus.copy<- lapply(tw.corpus.copy, stemCompletion2,dictionnary=tw.corpus)
-tw.corpus.copy <- Corpus(VectorSource(tw.corpus.copy))
-
-wordFreq <- function(corpus, word)
-{
-  results <- lapply(corpus,function(x) { grep(as.character(x), pattern=paste0("\\<",word)) })
-  sum(unlist(results))
-}
-
-n.miner <- wordFreq(tw.corpus.copy, "miner")
-n.mining <- wordFreq(tw.corpus.copy, "mining")
-cat(n.miner,n.mining)
-
-replaceWord <- function(corpus, oldword, newword) 
-{
-  tm_map(corpus, content_transformer(gsub),
-  pattern=oldword, replacement=newword)
-}
-
-tw.corpus.copy=replaceWord(tw.corpus.copy, "miner", "mining")
-
-#--------------------------------------------------------------------------------------------------------
-
-tdm <- TermDocumentMatrix(tw.corpus.copy, control =list(wordLengths = c(1, Inf)))
-idx <- which(dimnames(tdm)$Terms %in% c("r", "data", "mining"))
-m=as.matrix(tdm)
-
-(freq.terms <- findFreqTerms(tdm, lowfreq = 20))
-freq.terms = sort(rowSums(m), decreasing=T)
-
-df<- data.frame(term=names(freq.terms),freq = freq.terms)
-
-library(ggplot2)
-ggplot(df, aes(x = term, y = freq)) + geom_bar(stat = "identity") + xlab("Terms") + ylab("Count") + coord_flip()
-labels(dimnames(tdm))
-
-
-library(RColorBrewer)
-pal <- brewer.pal(9, "BuGn")[-(1:4)]
-
-library(wordcloud)
-word.freq <- sort(rowSums(m), decreasing = T)
-wordcloud(words = names(word.freq), freq = word.freq, min.freq = 3,random.order = F, colors = pal)
 
 ```
 
