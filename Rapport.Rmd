@@ -2,27 +2,109 @@
 title: "RapportHAHAHA"
 output: word_document
 ---
+```{r}
+#install.packages("twitteR")
+library(twitteR)
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+consumer_key = 'XBVL33PFqTKkM58CQ8DDo7ECl'
+consumer_secret = 'GevVXBsQKRH0xqBY8gx3jYln7tFEC4F2AwKyZqBqaDqKYyfZJk'
+access_token = '2778070825-s4vifN46FrHG5AFkgNfyBrb2PuKadprl33dUa8x'
+access_secret = '8c1i7QW8H8Bq6KmiRBCLUbtFV7BC14l79wnnjDi3Z7fR3'
+
+setup_twitter_oauth(consumer_key, consumer_secret,access_token, access_secret)
+
+#-------------------------------------------------------------------------------------------------------
+
+tweets = userTimeline("Trump", n=3200)
+writeLines(strwrap(tweets.df$text[1],60))
+
+tweets.df=twListToDF(tweets)
+tweets.df$text[2]
+
+#------------------------------------------------------------------------------------------------------
+library(tm)
+
+vector.source=VectorSource(tweets.df$text)
+tw.corpus=Corpus(vector.source)
+
+removeURL <- function(x) gsub("http[^[:space:]]*", "", x)
+removeNumPunct <- function(x) gsub("[^[:alpha:][:space:]]*", "", x)
+
+tw.corpus=tm_map(tw.corpus, content_transformer(tolower))
+tw.corpus=tm_map(tw.corpus, content_transformer(removeURL))
+tw.corpus=tm_map(tw.corpus, content_transformer(removeNumPunct))
+
+
+
+myStopwords <- c(stopwords('english'), "use", "see", "used", "via", "amp")
+myStopwords <- setdiff(myStopwords, c("r", "big"))
+
+tw.corpus=tm_map(tw.corpus, removeWords,myStopwords)
+tw.corpus=tm_map(tw.corpus, stripWhitespace)
+
+as.character(tw.corpus[[77]])
+
+#------------------------------------------------------------------------------------------------------
+
+tw.corpus.copy=tw.corpus
+
+
+tw.corpus.copy=tm_map(tw.corpus.copy,stemDocument)
+
+as.character(tw.corpus.copy[[77]])
+
+stemCompletion2 <- function(x, dictionary)
+{
+  x <- unlist(strsplit(as.character(x), " ")) 
+  x <- x[x != ""] 
+  x <- stemCompletion(x, dictionary=dictionary)  
+  x <- paste(x, sep="", collapse=" ") 
+  PlainTextDocument(stripWhitespace(x))
+}
+
+tw.corpus.copy<- lapply(tw.corpus.copy, stemCompletion2,dictionnary=tw.corpus)
+tw.corpus.copy <- Corpus(VectorSource(tw.corpus.copy))
+
+wordFreq <- function(corpus, word)
+{
+  results <- lapply(corpus,function(x) { grep(as.character(x), pattern=paste0("\\<",word)) })
+  sum(unlist(results))
+}
+
+n.miner <- wordFreq(tw.corpus.copy, "miner")
+n.mining <- wordFreq(tw.corpus.copy, "mining")
+cat(n.miner,n.mining)
+
+replaceWord <- function(corpus, oldword, newword) 
+{
+  tm_map(corpus, content_transformer(gsub),
+  pattern=oldword, replacement=newword)
+}
+
+tw.corpus.copy=replaceWord(tw.corpus.copy, "miner", "mining")
+
+#--------------------------------------------------------------------------------------------------------
+
+tdm <- TermDocumentMatrix(tw.corpus.copy, control =list(wordLengths = c(1, Inf)))
+idx <- which(dimnames(tdm)$Terms %in% c("r", "data", "mining"))
+m=as.matrix(tdm)
+
+(freq.terms <- findFreqTerms(tdm, lowfreq = 20))
+freq.terms = sort(rowSums(m), decreasing=T)
+
+df<- data.frame(term=names(freq.terms),freq = freq.terms)
+
+library(ggplot2)
+ggplot(df, aes(x = term, y = freq)) + geom_bar(stat = "identity") + xlab("Terms") + ylab("Count") + coord_flip()
+labels(dimnames(tdm))
+
+
+library(RColorBrewer)
+pal <- brewer.pal(9, "BuGn")[-(1:4)]
+
+library(wordcloud)
+word.freq <- sort(rowSums(m), decreasing = T)
+wordcloud(words = names(word.freq), freq = word.freq, min.freq = 3,random.order = F, colors = pal)
+
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
-```
-
-## Including Plotszaezaez
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
