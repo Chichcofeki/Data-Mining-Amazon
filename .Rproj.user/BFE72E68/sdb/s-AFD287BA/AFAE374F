@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "'\nScript      : main\nCreated     : March, 2015\nAuthor(s)   : iHub Research\nVersion     : v1.0\nLicense     : Apache License, Version 2.0\n\nDescription : do sentiment analysis\n'\nlibrary(pracma)\ncd('//qlsrv/vg502574/Bureau/Programmation/Option TextAnalysis/Projet')\n\n\nsource('libraries.R')\nsource('sentiment.R')\n\ndata <- total.results\n\n# data1=data[1:(nrow(data)*0.9),]\n# data2=data[nrow(data1):nrow(data),]\n\nind=sample(2, nrow(data),replace = T, prob=c(0.7,0.3))\ndata1=data[ind==1,]\ndata2=data[ind==2,]\n\nNaiveBayesClassifier <- naiveBayes(data1[,2:3], data1[,4])\n\nprediction <- predict(NaiveBayesClassifier, data2)\n\nconf.matrix <- table(prediction, data2[,4], dnn=list('predicted','actual'))\n",
+    "created" : 1490005754796.000,
+    "dirty" : true,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "3664643446",
+    "id" : "AFAE374F",
+    "lastKnownWriteTime" : 1489402895,
+    "last_content_update" : -2147483648,
+    "path" : "//qlsrv/vg502574/Bureau/Programmation/Option TextAnalysis/Projet/main.R",
+    "project_path" : null,
+    "properties" : {
+    },
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
