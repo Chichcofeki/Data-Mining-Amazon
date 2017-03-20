@@ -28,9 +28,9 @@ corpus.amazon=tm_map(corpus.amazon, stripWhitespace)
 corpus.amazon=tm_map(corpus.amazon,stemDocument)
 
 as.character(corpus.amazon[[1]])
-#------------------------------------------------------------------------------------------------------------------------
-  
 
+#commentaire de gui
+#-----------------------------------------------------------------------------------------------------------------------
 
 ```
 
