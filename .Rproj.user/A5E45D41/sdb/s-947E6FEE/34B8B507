@@ -1,0 +1,20 @@
+{
+    "collab_server" : "",
+    "contents" : "##### Installation des packages n?cessaires\n\nlibrary(\"tm\")\nlibrary('wordcloud')\nlibrary(\"twitteR\")\n\n#Les donn?es de l'appli twitter\n\nconsumer_key <- '3K6VlrStUptSZ0EAJpexIpF0z'\nconsumer_secret <- 'n5iaFmbb0wSeqW55Xgq8WcOifYpwgKnXDBDJRw9tvPkPxHwSOP'\naccess_token <- '764477638933184513-5wmPDIzu5VpvReDvkxCjYtvtsDtj3PC'\naccess_secret <- 'cmd0SMEot9IvqDVGF5Vl9SSLSbqwSVm2A1rkdUHrkUzY3'\n\nsetup_twitter_oauth(consumer_key,consumer_secret,access_token,access_secret)\n\n#the cainfo parameter is necessary only on Windows\ntweets <- userTimeline(\"realDonaldTrump\",n=3200)\ntweets.df <- twListToDF(tweets)\n\n#fix(tweets.df)\n#tweets.df$text[2]\n#labels(tweets.df)\n\nwriteLines( strwrap( tweets.df$text[190] ) )\n\nwriteLines( strwrap( tweets.df$text[190],60 ) )   \n\nVector.source=VectorSource(tweets.df$text)\n\nVector.source\nnames(Vector.source)\nVector.source$content[2]\n\ntw.corpus = Corpus (Vector.source)\nas.character(tw.corpus[[2]])\n\nremoveURL <- function(x) gsub(\"http[^[:space:]]*\", \"\", x)\nremoveNumPunct <- function(x) gsub(\"[^[:alpha:][:space:]]*\",\"\",x)\n\n\n\ntw.corpus=tm_map(tw.corpus,content_transformer(removeURL))\ntw.corpus=tm_map(tw.corpus,content_transformer(removeNumPunct))\ntw.corpus=tm_map(tw.corpus,content_transformer(tolower))\n\nas.character(tw.corpus[[1]])\nstopwords('English')\n\nmyStopwords.anglais<-c(stopwords('english'),\"use\",\"see\",\"used\",\"via\",\"amp\")\nlength(myStopwords.anglais)\n\nmyStopwords.anglais <- setdiff(myStopwords.anglais,c(\"r\",\"big\"))\n\ntw.corpus[[45]]$content\ntw.corpus = tm_map(tw.corpus,removeWords,myStopwords.anglais)\ntw.corpus = tm_map(tw.corpus,stripWhitespace)\n\n\n\ntw.corpus.copy = tw.corpus\n\ntw.corpus.copy = tm_map(tw.corpus.copy,stemDocument)\n\nstemCompletion2 <- function(x, dictionary)\n{\n  x <- unlist(strsplit(as.character(x), \" \")) \n  x <- x[x != \"\"] # x ne mantient que ses ?l?ments diff?rents de du vide (\"\")\n  x <- stemCompletion(x, dictionary=dictionary)\n  x <- paste(x, sep=\"\", collapse=\" \") # concatener les ?l?ments de x\n  PlainTextDocument(stripWhitespace(x))\n}\ntw.corpus.copy = lapply(tw.corpus.copy,stemCompletion2,dictionary=tw.corpus)\ntw.corpus.copy[[1]]$content\n\nwriteLines(strwrap(tw.corpus.copy[[1]]$content, 60))\n\nmonCorpus_RDM.Copy <- Corpus(VectorSource(tw.corpus.copy))\n\nwriteLines(strwrap(tw.corpus.copy[[1]]$content, 60))\nwriteLines(strwrap(tw.corpus.copy[[1]]$content, 60))\n\nwordFreq <- function(corpus, word)\n{\n  results <- lapply(corpus,\n                    function(x) { grep(as.character(x), pattern=paste0(\"\\\\<\",word)) })\n  sum(unlist(results))\n}\n\nn.miner <- wordFreq(monCorpus_RDM.Copy, \"miner\")\nn.mining <- wordFreq(monCorpus_RDM.Copy, \"mining\")\n\ncat(n.miner, n.mining)\n\n\n\n\ntdm = TermDocumentMatrix(tw.corpus,control=list(wordLengths = c(1,Inf)))\n\nidx = which(dimnames(tdm)$Terms ==\"r\")\ninspect(tdm[idx + (0:5),101:110])\nidx = which (dimnames(tdm)$Terms %in% c(\"r\",\"data\",\"mining\"))\n\n\nm <- as.matrix(tdm)\nv <- sort(rowSums(m), decreasing=TRUE)\nhead(v, 10)\n\nfindFreqTerms(tdm, lowfreq = 20)\nv[freq.terms]\n\n\nnames(freq.terms)\ndf <- data.frame(term = freq.terms, freq = v[freq.term])\n\nlibrary(ggplot2) \nggplot(v[freq.terms],sort=T, aes(reorder(term, freq),freq)) + geom_bar(stat = \"identity\") + xlab(\"Terms\") + ylab(\"Count\") + coord_flip()\nlabels(dimnames(tdm))\nhead(v,20)\n\nlibrary(wordcloud)\nwordcloud(words=names(v),freq=v)\n",
+    "created" : 1490005855714.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "4213296856",
+    "id" : "34B8B507",
+    "lastKnownWriteTime" : 1489391553,
+    "last_content_update" : 1489391553,
+    "path" : "//qlsrv/ft510263/Téléchargements/R-Portable/Script.R",
+    "project_path" : null,
+    "properties" : {
+    },
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
