@@ -5,7 +5,7 @@ output: word_document
 ```{r}
 library(tm)
 
-amazon=read.table('//qlsrv/vg502574/Bureau/Programmation/Option TextAnalysis/Projet/sentiment labelled sentences/amazon_cells_labelled.txt', sep='\t', col.names = c("text","avis"))
+amazon=read.table('amazon_cells_labelled.txt', sep='\t', col.names = c("text","avis"))
 
 vector.amazon=VectorSource(amazon$text);
 corpus.amazon=Corpus(vector.amazon)
@@ -28,10 +28,25 @@ corpus.amazon=tm_map(corpus.amazon, stripWhitespace)
 corpus.amazon=tm_map(corpus.amazon,stemDocument)
 
 as.character(corpus.amazon[[1]])
-#Commentaire de fekih
-#Commentaire de gui
-#------------------------------------------------------------------------------------------------------------------------
-  
+
+
+
+tdm = TermDocumentMatrix(corpus.amazon)
+
+m <- as.matrix(tdm)
+v <- sort(rowSums(m), decreasing=TRUE)
+
+freq=findFreqTerms(tdm, lowfreq = 20)
+
+
+df <- data.frame(term = freq, freq = v[freq])
+
+library(ggplot2) 
+ggplot(df[1:20,], aes(reorder(term,freq), y = freq)) + geom_bar(stat = "identity") + xlab("Terms") + ylab("Count") + coord_flip()
+
+library(wordcloud)
+wordcloud(df$term,df$freq)
+
 
 
 ```
