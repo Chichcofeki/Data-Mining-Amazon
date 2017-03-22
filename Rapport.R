@@ -1,19 +1,14 @@
----
-title: "Rapport"
-output: word_document
----
-```{r}
-install.packages("tm")
-install.packages("ggplot2")
-install.packages("wordcloud")
+rm(list = ls())
+#install.packages("tm")
+#install.packages("ggplot2")
+#install.packages("wordcloud")
 
 library(tm)
 library(ggplot2)
 library(wordcloud)
 
-
-
-amazon=read.table('amazon_cells_labelled.txt', sep='\t', col.names = c("text","avis"))
+#fichier="amazon_cells"
+amazon=read.table(paste('data-amazon/',f,'_labelled.txt',sep=""), sep='\t', col.names = c("text","avis"))
 
 vector.amazon=VectorSource(amazon$text);
 corpus.amazon=Corpus(vector.amazon)
@@ -49,11 +44,8 @@ freq=findFreqTerms(tdm, lowfreq = 20)
 
 df <- data.frame(term = freq, freq = v[freq])
 
-ggplot(df[1:20,], aes(reorder(term,freq), y = freq)) + geom_bar(stat = "identity") + xlab("Terms") + ylab("Count") + coord_flip()
+#ggplot(df[1:20,], aes(reorder(term,freq), y = freq)) + geom_bar(stat = "identity") + xlab("Terms") + ylab("Count") + coord_flip()
 
-wordcloud(df$term,df$freq)
+#wordcloud(df$term,df$freq)
 
-
-
-```
 
