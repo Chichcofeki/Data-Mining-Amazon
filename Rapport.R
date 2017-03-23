@@ -1,13 +1,14 @@
 rm(list = ls())
 #install.packages("tm")
 #install.packages("ggplot2")
-#install.packages("wordcloud")
+install.packages("wordcloud")
+install.packages("slam")
 
 library(tm)
 library(ggplot2)
 library(wordcloud)
 
-#fichier="amazon_cells"
+f="amazon_cells"
 amazon=read.table(paste('data-amazon/',f,'_labelled.txt',sep=""), sep='\t', col.names = c("text","avis"))
 
 vector.amazon=VectorSource(amazon$text);
