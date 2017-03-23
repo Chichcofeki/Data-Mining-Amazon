@@ -7,7 +7,9 @@ INFORMATIONS IMPORTANTES :
 * Un fichier amazon_cells_labelled.txt avec les avis positifs (1) et négatifs (0) sur les consomateurs d'Amazon. 
 * Un fichier imdb_labelled.txt avec les avis positifs (1) et négatifs (0) sur les films considérés dans IMDb. 
 * Un fichier yelp_labelled.txt avec les avis positifs (1) et négatifs (0) sur les entreprises considérées dans Yelp. 
-DONNEES DISPONIBLES : les données à utiliser sont disponibles sur haps://archive. ic s.uci .edu/ml/datasets/Sentiment+Labelled+Sentences# TRAVAIL DEMANDE (toutes les étapes doivent être systématiquement décrites, illustrées et justifiées dans le rapport à rendre le 27/03/2017) : 
+
+DONNEES DISPONIBLES : les données à utiliser sont disponibles sur haps://archive. ic s.uci .edu/ml/datasets/Sentiment+Labelled+Sentences# 
+TRAVAIL DEMANDE (toutes les étapes doivent être systématiquement décrites, illustrées et justifiées dans le rapport à rendre le 27/03/2017) : 
 1. Traitement et nettoyage des trois fichiers grâce à la librarie « tm ».
 2. Faire ressortir grâce à un histogramme les mots les plus fréquents dans les avis exprimés dans les trois fichiers. 
 3. Mettre en évidence une éventuelle similarité ou dissimilarité entre les mots utilisés dans les avis exprimés dans les trois fichiers. 
