@@ -40,7 +40,7 @@ GetNegativeWords <- function() {
 }
 
 #FONCTION MODIFIE !!!!!!!!!!!!!
-df=read.table('sentiment labelled sentences/amazon_cells_labelled.txt', sep='\t')
+df=read.table('data-amazon/amazon_cells_labelled.txt', sep='\t')
 
 GetPositiveText <- function() {
   # ===========================================================================
