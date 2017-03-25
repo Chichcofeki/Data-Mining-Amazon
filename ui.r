@@ -1,18 +1,15 @@
 library(shiny)
 
 ui <- fluidPage(
-  fluidRow(
-    selectInput('fichier', label = 'Selectionnez un fichier', choices = c('amazon_cells','imdb','yelp'))
-  ),
-  fluidRow(
-    column(width=6,{
-      plotOutput(outputId = "plot")   
-      
-    }),
-    column(width=6,{
-      plotOutput(outputId = "wordcloud")
-    })
-  )
+  sidebarLayout(
+    sidebarPanel(
+      selectInput('fichier', label = 'Selectionnez un fichier', choices = c('amazon','imdb','yelp'),selectize=FALSE,size=3)  
+    ),
+    mainPanel(
+      plotOutput(outputId = "wordcloud"),  
+      plotOutput(outputId = "plot"),
+      dataTableOutput('data')
+    )
+
   
-  
-)
+))

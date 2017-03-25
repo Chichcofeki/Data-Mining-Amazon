@@ -4,14 +4,8 @@
 library(shiny)
 
 server <- function(input, output) {
-  source("rapport.r")
-  #source("rapport.r")
-  #output$plot <- renderPlot({
-  #  f=input$fichier
-  #  print(f)
-  #  source("rapport.r")
-  #  gplot
-  #})
+  source("ggplot_wordcloud.r")
+  source("sentiment_analysis.r")
   output$wordcloud <- renderPlot({
     
     f=input$fichier
@@ -21,8 +15,12 @@ server <- function(input, output) {
   output$plot <- renderPlot({
     
     f=input$fichier
-    
     getggPlot(f)
+  })
+  output$data <- renderDataTable({
+    f=input$fichier
+    getSentiments(f)
+    
   })
 
 

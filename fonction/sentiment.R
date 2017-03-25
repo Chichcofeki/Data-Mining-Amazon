@@ -7,7 +7,6 @@ License     : Apache License, Version 2.0
 
 Description : compute the sentiment of sentence(s)
 '
-source('util.R')
 
 # =============================================================================
 # Fetch polarity datasets and words lists

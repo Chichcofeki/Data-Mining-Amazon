@@ -14,7 +14,7 @@ library(ggplot2)
 library(wordcloud)
 
 #f="amazon_cells"
-amazon=read.table(paste('data-amazon/',filepath,'_labelled.txt',sep=""), sep='\t', col.names = c("text","avis"))
+amazon=read.table(paste('avis/',filepath,'.txt',sep=""), sep='\t', col.names = c("text","avis"))
 
 vector.amazon=VectorSource(amazon$text);
 corpus.amazon=Corpus(vector.amazon)
@@ -73,7 +73,7 @@ getggPlot <- function(filepath){
   library(wordcloud)
   
   #f="amazon_cells"
-  amazon=read.table(paste('data-amazon/',filepath,'_labelled.txt',sep=""), sep='\t', col.names = c("text","avis"))
+  amazon=read.table(paste('avis/',filepath,'.txt',sep=""), sep='\t', col.names = c("text","avis"))
   
   vector.amazon=VectorSource(amazon$text);
   corpus.amazon=Corpus(vector.amazon)
