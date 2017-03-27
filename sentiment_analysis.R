@@ -15,16 +15,19 @@ source('fonction/sentiment.R',local=T)
 
 data <- total.results
 
+indice=sample(2, nrow(data),replace = T, prob=c(0.7,0.3))
+ensemble_apprentissage=data[indice==1,]
+ensemble_test=data[indice==2,]
 
-prediction <- predict(NaiveBayesClassifier, data)
-data$prediction=prediction
+NaiveBayesClassifier <-naiveBayes(ensemble_apprentissage[,1:3], ensemble_apprentissage[,4])
+prediction <- predict(NaiveBayesClassifier, ensemble_test[,4])
+ensemble_test$prediction=prediction
 
-#indice=sample(2,length(data),replace = T, prob=c(0.7,0.3))
-#ensemble_apprentissage=data[indice==1,]
-#ensemble_test=data[ind==2,]
+(conf.matrix <- table(ensemble_test[,5], ensemble_test[,4], dnn=list('predicted','actual')))
+
 
 return(data)
 
-#conf.matrix <- table(data[,5], data[,4], dnn=list('predicted','actual'))
+
 
 }
