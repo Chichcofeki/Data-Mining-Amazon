@@ -59,7 +59,7 @@ FP=cm.naiveBayes[1,1]
 info.table[2,]=c(VP/(VP+FN),VN/(VN+FP),VP/(VP+FP),VN/(VN+FN))
 
 (info.table)
-
-return(cm.scores)
+info.table=round(info.table,4)
+return(info.table)
 
 }
