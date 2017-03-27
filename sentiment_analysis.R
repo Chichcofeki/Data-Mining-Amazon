@@ -1,3 +1,7 @@
+#install.packages("pracma")
+#install.packages("plyr")
+#install.packages("stringr")
+#install.packages("e1071")
 getSentiments <- function(filepath){
 library(pracma)
 library(plyr)
