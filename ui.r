@@ -8,7 +8,10 @@ ui <- fluidPage(
     mainPanel(
       plotOutput(outputId = "wordcloud"),  
       plotOutput(outputId = "plot"),
-      dataTableOutput('data')
+      dataTableOutput('data'),
+      dataTableOutput('conf_mat_scores'),
+      dataTableOutput('conf_mat_naiveBayes'),
+      dataTableOutput('info_table')
     )
 
   

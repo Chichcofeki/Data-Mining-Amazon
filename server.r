@@ -1,10 +1,11 @@
 
 
-#install.packages("shiny")
+#install.packages("DT")
 library(shiny)
+library(DT)
+
 
 server <- function(input, output) {
-  #setwd("C:/Users/extra/OneDrive/Etudes/Projet DATA MINING - Option/Data-Mining-Amazon")
   source("ggplot_wordcloud.r")
   source("sentiment_analysis.r")
   output$wordcloud <- renderPlot({
@@ -24,6 +25,20 @@ server <- function(input, output) {
     
   })
 
-
+  output$conf_mat_scores <- DT::renderDataTable({
+    f=input$fichier
+    datatable(getSentiments(f))
+    
+  },include.rownames=TRUE)
+  output$conf_mat_naiveBayes <- renderDataTable({
+    f=input$fichier
+    getSentiments(f)
+    
+  })
+  output$info_table <- renderDataTable({
+    f=input$fichier
+    getSentiments(f)
+    
+  })
 }
   

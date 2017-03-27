@@ -60,8 +60,6 @@ info.table[2,]=c(VP/(VP+FN),VN/(VN+FP),VP/(VP+FP),VN/(VN+FN))
 
 (info.table)
 
-return(data)
-
-
+return(cm.scores)
 
 }
