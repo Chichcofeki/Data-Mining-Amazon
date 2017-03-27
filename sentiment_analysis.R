@@ -2,7 +2,7 @@
 #install.packages("plyr")
 #install.packages("stringr")
 #install.packages("e1071")
-getSentiments <- function(filepath){
+getSentiments <- function(filepath) {
 library(pracma)
 library(plyr)
 library(stringr)
@@ -18,6 +18,16 @@ source('fonction/util.R',local=T)
 source('fonction/sentiment.R',local=T)
 
 data <- total.results
+
+data$neg=as.numeric(data$neg)
+data$pos=as.numeric(data$pos)
+
+data$score=as.integer(data$pos)-as.integer(data$neg)
+
+data[data$score<=0,"score_sentiment"]="negative"
+data[data$score>0,"score_sentiment"]="positive"
+
+(conf.matrix <- table(data[,6], data[,4], dnn=list('predicted','actual')))
 
 indice=sample(2, nrow(data),replace = T, prob=c(0.7,0.3))
 ensemble_apprentissage=data[indice==1,]
